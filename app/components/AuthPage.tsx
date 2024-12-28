@@ -1,30 +1,23 @@
-import React, { useState } from 'react';
+import { Form, Link, useNavigate } from '@remix-run/react';
 import { Mail, Lock, ArrowRight, Github, User, AlertCircle } from 'lucide-react';
+import { useState } from 'react';
 
-const AuthPage = () => {
+interface AuthPageProps {
+  isLogin: boolean;
+  error?: string;
+  isSubmitting?: boolean;
+}
 
-  const [isLogin, setIsLogin] = useState(true);
+export const AuthPage = ({ isLogin, error, isSubmitting }: AuthPageProps) => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [isUsernameAvailable, setIsUsernameAvailable] = useState(true);
-  const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const CLIENT_ID ="Ov23liblcsy9A9MU6zSC";
-  //83cddc16868f7864b279
 
-
-  const loginwithgithub=()=>{
-    window.location.assign("https:/github.com/login/oauth/authorize?client_id="+ CLIENT_ID);
-  }
-
-  const API_URL = 'http://localhost:5000';
-
-  const checkUsername = async (value) => {
+  const checkUsername = async (value: string) => {
     setUsername(value);
     if (value.length >= 3) {
       try {
-        const response = await fetch(`${API_URL}/api/check-username`, {
+        const response = await fetch('/api/check-username', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -39,44 +32,6 @@ const AuthPage = () => {
       }
     } else {
       setIsUsernameAvailable(false);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-    setIsLoading(true);
-
-    try {
-      const endpoint = isLogin ? 'login' : 'signup';
-      const body = isLogin 
-        ? { email, password }
-        : { username, email, password };
-
-      const response = await fetch(`${API_URL}/api/${endpoint}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(body),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Authentication failed');
-      }
-
-      // Store token and user data
-      localStorage.setItem('token', data.token);
-      localStorage.setItem('user', JSON.stringify(data.user));
-
-      // Redirect or update app state
-      window.location.href = '/intro'; // Or use React Router navigation
-    } catch (err) {
-      setError(err.message);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -113,7 +68,7 @@ const AuthPage = () => {
         <div className="flex border border-gray-800 rounded-lg p-1">
           <button
             type="button"
-            onClick={() => setIsLogin(true)}
+            onClick={() => navigate('/auth/login')}
             className={`flex-1 py-2 rounded-md transition-colors ${
               isLogin 
                 ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white' 
@@ -124,7 +79,7 @@ const AuthPage = () => {
           </button>
           <button
             type="button"
-            onClick={() => setIsLogin(false)}
+            onClick={() => navigate('/auth/register')}
             className={`flex-1 py-2 rounded-md transition-colors ${
               !isLogin 
                 ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white' 
@@ -136,7 +91,7 @@ const AuthPage = () => {
         </div>
 
         {/* Auth Form */}
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <Form method="post" className="space-y-6">
           {!isLogin && (
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-400 mb-1">
@@ -184,8 +139,6 @@ const AuthPage = () => {
                 id="email"
                 name="email"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
                 required
                 className="block w-full pl-10 bg-gray-900/50 border border-gray-800 rounded-lg py-2.5 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
                 placeholder="Enter your email"
@@ -205,8 +158,6 @@ const AuthPage = () => {
                 id="password"
                 name="password"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
                 required
                 className="block w-full pl-10 bg-gray-900/50 border border-gray-800 rounded-lg py-2.5 text-white focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all"
                 placeholder="Enter your password"
@@ -227,18 +178,18 @@ const AuthPage = () => {
                   Remember me
                 </label>
               </div>
-              <a href="#" className="text-sm text-cyan-500 hover:text-cyan-400 transition-colors">
+              <Link to="/auth/forgot-password" className="text-sm text-cyan-500 hover:text-cyan-400 transition-colors">
                 Forgot password?
-              </a>
+              </Link>
             </div>
           )}
 
           <button
             type="submit"
-            disabled={isLoading || (!isLogin && !isUsernameAvailable)}
+            disabled={isSubmitting || (!isLogin && !isUsernameAvailable)}
             className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center group disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoading ? (
+            {isSubmitting ? (
               <span className="flex items-center">
                 Loading...
               </span>
@@ -249,7 +200,7 @@ const AuthPage = () => {
               </>
             )}
           </button>
-        </form>
+        </Form>
 
         {/* Alternative Login */}
         <div className="relative">
@@ -261,28 +212,25 @@ const AuthPage = () => {
           </div>
         </div>
 
-        <button 
-  type="button"
-  onClick={loginwithgithub}
-  className="w-full bg-gray-900/50 text-white py-2.5 rounded-lg border border-gray-800 hover:border-gray-700 transition-colors flex items-center justify-center"
->
-  <Github className="w-5 h-5 mr-2" />
-  Continue with GitHub
-</button>
+        <Form action="/auth/github" method="post">
+          <button 
+            type="submit"
+            className="w-full bg-gray-900/50 text-white py-2.5 rounded-lg border border-gray-800 hover:border-gray-700 transition-colors flex items-center justify-center"
+          >
+            <Github className="w-5 h-5 mr-2" />
+            Continue with GitHub
+          </button>
+        </Form>
 
         {/* Toggle Auth Mode */}
         <p className="text-center text-gray-400">
           {isLogin ? "Don't have an account? " : "Already have an account? "}
-          <button
-            type="button"
-            onClick={() => {
-              setIsLogin(!isLogin);
-              setError('');
-            }}
+          <Link
+            to={isLogin ? '/auth/register' : '/auth/login'}
             className="text-cyan-500 hover:text-cyan-400 transition-colors"
           >
             {isLogin ? 'Sign up' : 'Sign in'}
-          </button>
+          </Link>
         </p>
       </div>
     </div>

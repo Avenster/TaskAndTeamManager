@@ -1,10 +1,11 @@
 // server.js
-import express from 'express';
-import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
-import cors from 'cors';
-import dotenv from 'dotenv';
+const express = require('express');
+const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const cors = require('cors');
+const dotenv = require('dotenv');
+
 
 dotenv.config();
 
@@ -60,6 +61,7 @@ const authenticateToken = (req, res, next) => {
     res.status(400).json({ error: 'Invalid token' });
   }
 };
+
 
 // Check username availability
 app.post('/api/check-username', async (req, res) => {
@@ -161,6 +163,93 @@ app.post('/api/login', async (req, res) => {
 // Protected route example
 app.get('/api/protected', authenticateToken, (req, res) => {
   res.json({ message: 'This is a protected route', userId: req.user.id });
+});
+app.get('/api/auth/github/callback', async (req, res) => {
+  const { code } = req.query;
+
+  try {
+    // Exchange code for access token
+    const tokenResponse = await axios.post(
+      'https://github.com/login/oauth/access_token',
+      {
+        client_id: process.env.GITHUB_CLIENT_ID,
+        client_secret: process.env.GITHUB_CLIENT_SECRET,
+        code,
+      },
+      {
+        headers: {
+          Accept: 'application/json',
+        },
+      }
+    );
+
+    const accessToken = tokenResponse.data.access_token;
+
+    // Get user data from GitHub
+    const userResponse = await axios.get('https://api.github.com/user', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const githubUser = userResponse.data;
+
+    // Get user's email from GitHub
+    const emailsResponse = await axios.get('https://api.github.com/user/emails', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const primaryEmail = emailsResponse.data.find(email => email.primary).email;
+
+    // Find or create user
+    let user = await User.findOne({ githubId: githubUser.id });
+
+    if (!user) {
+      // Check if user exists with the same email
+      user = await User.findOne({ email: primaryEmail });
+      
+      if (user) {
+        // Link GitHub to existing account
+        user.githubId = githubUser.id;
+        user.avatarUrl = githubUser.avatar_url;
+        await user.save();
+      } else {
+        // Create new user
+        user = new User({
+          username: githubUser.login,
+          email: primaryEmail,
+          githubId: githubUser.id,
+          avatarUrl: githubUser.avatar_url,
+        });
+        await user.save();
+      }
+    }
+
+    // Create JWT token
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    // Redirect to frontend with token
+    res.redirect(`${process.env.FRONTEND_URL}/auth-callback?token=${token}`);
+  } catch (error) {
+    console.error('GitHub OAuth error:', error);
+    res.redirect(`${process.env.FRONTEND_URL}/auth-callback?error=Authentication failed`);
+  }
+});
+
+// Additional route to get user profile with GitHub data
+app.get('/api/user/profile', authenticateToken, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    res.json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 const PORT = process.env.PORT || 5000;

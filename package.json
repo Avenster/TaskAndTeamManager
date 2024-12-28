@@ -14,10 +14,14 @@
     "@remix-run/node": "^2.15.2",
     "@remix-run/react": "^2.15.2",
     "@remix-run/serve": "^2.15.2",
+    "add": "^2.0.6",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "cors": "^2.8.5",
+    "crypto": "^1.0.1",
+    "crypto-browserify": "^3.12.1",
+    "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "isbot": "^4.1.0",
     "jsonwebtoken": "^9.0.2",
@@ -26,8 +30,11 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "recharts": "^2.15.0",
+    "remix-auth": "^4.1.0",
+    "remix-auth-github": "^3.0.1",
     "tailwind-merge": "^2.6.0",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "vite-plugin-node-polyfills": "^0.22.0"
   },
   "devDependencies": {
     "@remix-run/dev": "^2.15.2",
