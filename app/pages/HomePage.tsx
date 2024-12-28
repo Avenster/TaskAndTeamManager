@@ -6,6 +6,8 @@ import Footer from "~/components/Footer";
 import TeamPage from "./TeamPage";
 import CalendarPage from "./CalenderPage";
 import ActivityPage from "./ActivityLog";
+import MembersPage from "./MembersPage";
+import AnalyticsPage from "./Analytics";
 
 export default function HomePage() {
   const [currentPage, setCurrentPage] = useState("home");
@@ -24,7 +26,11 @@ export default function HomePage() {
       case "activity":
         return <ActivityPage />;
 
+      case "analytics":
+        return <AnalyticsPage/>;
 
+      case "team-members":
+        return <MembersPage/>;
       case "calendar":
         return<CalendarPage/>
       default:

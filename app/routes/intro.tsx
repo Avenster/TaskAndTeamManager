@@ -9,7 +9,7 @@ import Footer from '~/components/Footer';
 
 const LandingPage = () => {
   return (
-    <div className="flex flex-col min-h-screen w-full bg-black items-center overflow-x-hidden">
+    <div className="flex flex-col h-fit  w-full bg-black items-center ">
       <Header />
 
       {/* Enhanced Hero Section */}
