@@ -104,8 +104,10 @@ const Sidebar = ({ onPageChange }) => {
       <div className="border-t border-white/10 p-4">
         {user && (
           <div className="flex items-center py-1 text-white mb-3">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center">
-              {user.username?.[0]?.toUpperCase()}
+            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center overflow-hidden">
+              {/* {user.username?.[0]?.toUpperCase()} */}
+
+              <img src={user.avatar_url} alt="" />
             </div>
             <span className="ml-2">{user.username}</span>
           </div>
