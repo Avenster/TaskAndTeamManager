@@ -1,5 +1,19 @@
-import React, { useState } from 'react';
+import  { useState,useEffect } from 'react';
 import { Mail, Lock, ArrowRight, Github, User, AlertCircle } from 'lucide-react';
+import { redirect, type LoaderFunctionArgs } from "@remix-run/node";
+import { useNavigate } from "@remix-run/react";
+import { getSession } from "~/sessions"; 
+
+export async function loader({ request }: LoaderFunctionArgs) {
+  const session = await getSession(request.headers.get("Cookie"));
+  
+  // Check for server-side session token
+  if (session.has("token")) {
+    return redirect("/");
+  }
+  
+  return null;
+}
 
 const AuthPage = () => {
 
@@ -11,16 +25,28 @@ const AuthPage = () => {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const CLIENT_ID ="Ov23liblcsy9A9MU6zSC";
+  const API_URL = "http://localhost:5000";
+  const [rerender, setRerender] = useState(false);
+  const navigate = useNavigate()
   //83cddc16868f7864b279
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    const accessToken = localStorage.getItem('access_token');
+    if (token || accessToken) {
+      navigate('/', { replace: true });
+    }
+  }, [navigate]);
 
+
+  
 
   const loginwithgithub=()=>{
-    window.location.assign("https:/github.com/login/oauth/authorize?client_id="+ CLIENT_ID);
+    window.location.assign("https://github.com/login/oauth/authorize?client_id=" + CLIENT_ID);
   }
 
-  const API_URL = 'http://localhost:5000';
-
   const checkUsername = async (value) => {
+
+
     setUsername(value);
     if (value.length >= 3) {
       try {
@@ -41,6 +67,50 @@ const AuthPage = () => {
       setIsUsernameAvailable(false);
     }
   };
+  useEffect(() => {
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const code = urlParams.get('code');
+  
+    if (code && !localStorage.getItem("accessToken")) {
+      const getAccessToken = async () => {
+        try {
+          const response = await fetch(`${API_URL}/getAccessToken?code=${code}`);
+          const data = await response.json();
+  
+          if (data.access_token) {
+            localStorage.setItem('accessToken', data.access_token);
+  
+            const authResponse = await fetch(`${API_URL}/getUserData`, {
+              method: 'GET',
+              headers: {
+                'Authorization': `Bearer ${data.access_token}`
+              }
+            });
+
+            console.log(authResponse);
+  
+            const authData = await authResponse.json();
+  
+            if (authResponse.ok) {
+              localStorage.setItem('token', authData.token);
+              localStorage.setItem('user', JSON.stringify(authData.user));
+              window.location.href = '/intro';
+            } else {
+              setError('Failed to authenticate with GitHub');
+            }
+          } else {
+            setError('Failed to obtain access token');
+          }
+        } catch (error) {
+          console.error('Error during GitHub authentication:', error);
+          setError('Authentication failed');
+        }
+      };
+  
+      getAccessToken();
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();

@@ -12,6 +12,10 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cors());
+const fetch = (...args)=>
+  import ('node-fetch').then(({default:fetch}) =>fetch(...args));
+
+const bodyParser = require('body-parser');
 
 // MongoDB Connection
 mongoose.connect(process.env.MONGO_URL)
@@ -160,88 +164,12 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
+
+
 // Protected route example
 app.get('/api/protected', authenticateToken, (req, res) => {
   res.json({ message: 'This is a protected route', userId: req.user.id });
 });
-app.get('/api/auth/github/callback', async (req, res) => {
-  const { code } = req.query;
-
-  try {
-    // Exchange code for access token
-    const tokenResponse = await axios.post(
-      'https://github.com/login/oauth/access_token',
-      {
-        client_id: process.env.GITHUB_CLIENT_ID,
-        client_secret: process.env.GITHUB_CLIENT_SECRET,
-        code,
-      },
-      {
-        headers: {
-          Accept: 'application/json',
-        },
-      }
-    );
-
-    const accessToken = tokenResponse.data.access_token;
-
-    // Get user data from GitHub
-    const userResponse = await axios.get('https://api.github.com/user', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    const githubUser = userResponse.data;
-
-    // Get user's email from GitHub
-    const emailsResponse = await axios.get('https://api.github.com/user/emails', {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    const primaryEmail = emailsResponse.data.find(email => email.primary).email;
-
-    // Find or create user
-    let user = await User.findOne({ githubId: githubUser.id });
-
-    if (!user) {
-      // Check if user exists with the same email
-      user = await User.findOne({ email: primaryEmail });
-      
-      if (user) {
-        // Link GitHub to existing account
-        user.githubId = githubUser.id;
-        user.avatarUrl = githubUser.avatar_url;
-        await user.save();
-      } else {
-        // Create new user
-        user = new User({
-          username: githubUser.login,
-          email: primaryEmail,
-          githubId: githubUser.id,
-          avatarUrl: githubUser.avatar_url,
-        });
-        await user.save();
-      }
-    }
-
-    // Create JWT token
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: '24h' }
-    );
-
-    // Redirect to frontend with token
-    res.redirect(`${process.env.FRONTEND_URL}/auth-callback?token=${token}`);
-  } catch (error) {
-    console.error('GitHub OAuth error:', error);
-    res.redirect(`${process.env.FRONTEND_URL}/auth-callback?error=Authentication failed`);
-  }
-});
-
 // Additional route to get user profile with GitHub data
 app.get('/api/user/profile', authenticateToken, async (req, res) => {
   try {
@@ -251,6 +179,88 @@ app.get('/api/user/profile', authenticateToken, async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 });
+
+
+
+
+
+/*******************************Github Auth*****************************  */
+const CLIENT_ID = "Ov23liblcsy9A9MU6zSC";
+const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+
+
+app.use(bodyParser.json());
+app.get('/getAccessToken', async function (req, res) {
+  const params = new URLSearchParams({
+    client_id: CLIENT_ID,
+    client_secret: CLIENT_SECRET,
+    code: req.query.code
+  });
+  
+  try {
+    const response = await fetch(`https://github.com/login/oauth/access_token?${params.toString()}`, {
+      method: "POST",
+      headers: {
+        "Accept": "application/json"
+      }
+    });
+    
+    const data = await response.json();
+    if (data.error) {
+      console.log(data);
+      return res.status(400).json(data);
+      
+    }
+    
+    res.json(data);
+  } catch (error) {
+    console.error('Error fetching access token:', error);
+    res.status(500).json({ error: 'Failed to fetch access token' });
+  }
+});
+
+app.get('/getUserData', async function (req, res) {
+  const token = req.query.access_token || req.headers.authorization.split(' ')[1];
+  
+  try {
+    const response = await fetch("https://api.github.com/user", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "Accept": "application/json"
+      }
+    });
+    
+    const data = await response.json();
+    
+    if (response.status !== 200) {
+      return res.status(response.status).json(data);
+    }
+    
+    // Generate a JWT token for the GitHub user
+    const jwtToken = jwt.sign(
+      { id: data.id, provider: 'github' },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    res.json({
+      token: jwtToken,
+      user: {
+        id: data.id,
+        username: data.login,
+        email: data.email,
+        avatar_url: data.avatar_url,
+        name: data.name,
+        provider: 'github'
+      }
+    });
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    res.status(500).json({ error: 'Failed to fetch user data' });
+  }
+});
+
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

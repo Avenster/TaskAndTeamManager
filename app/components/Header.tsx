@@ -12,21 +12,77 @@ const Header = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+  const [githubUser, setGithubUser] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    const userData = localStorage.getItem('user');
-    if (token && userData) {
-      setIsLoggedIn(true);
-      setUser(JSON.parse(userData));
-    }
+    const checkAuthStatus = async () => {
+      const token = localStorage.getItem('token');
+      const accessToken = localStorage.getItem('accessToken');
+      const userData = localStorage.getItem('user');
+      
+      if (token && userData) {
+        try {
+          const parsedUserData = JSON.parse(userData);
+          setIsLoggedIn(true);
+          setUser(parsedUserData);
+        } catch (error) {
+          console.error('Error parsing user data:', error);
+          localStorage.removeItem('user');
+        }
+      }
+
+      // Fetch GitHub user data if access token exists
+      if (accessToken) {
+        try {
+          const response = await fetch('http://localhost:5000/getUserData', {
+            headers: {
+              'Authorization': `Bearer ${accessToken}`
+            }
+          });
+          
+          if (response.ok) {
+            const githubData = await response.json();
+            setGithubUser(githubData);
+            setIsLoggedIn(true);
+          } else {
+            console.error('Failed to fetch GitHub user data');
+            localStorage.removeItem('accessToken');
+          }
+        } catch (error) {
+          console.error('Error fetching GitHub user data:', error);
+          localStorage.removeItem('accessToken');
+        }
+      }
+    };
+
+    checkAuthStatus();
   }, []);
+
+
+  // useEffect(() => {
+  //   const token = localStorage.getItem('token');
+  //   const userData = localStorage.getItem('user');
+    
+  //   if (token && userData) {
+  //     try {
+  //       const parsedUserData = JSON.parse(userData);
+  //       setIsLoggedIn(true);
+  //       setUser(parsedUserData);
+  //     } catch (error) {
+  //       console.error('Error parsing user data:', error);
+  //       // Optionally, you can remove the corrupted data from localStorage
+  //       localStorage.removeItem('user');
+  //     }
+  //   }
+  // }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
+    localStorage.removeItem('accessToken'); // Add this line to clear GitHub token
     setIsLoggedIn(false);
     setUser(null);
+    setGithubUser(null);
     navigate('/auth');
   };
 
@@ -109,30 +165,48 @@ const Header = () => {
                 </button>
 
                 {/* User Menu */}
-                <div className="relative group">
-                  <button className="flex items-center space-x-1">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center text-white font-medium">
-                      {user?.username?.[0]?.toUpperCase()}
-                    </div>
-                  </button>
+                {/* User Menu */}
+<div className="relative group">
+  <button className="flex items-center space-x-1">
+    {githubUser ? (
+      <img 
+        src={githubUser.avatar_url} 
+        alt={githubUser.login}
+        className="w-8 h-8 rounded-full"
+      />
+    ) : (
+      <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center text-white font-medium">
+        {user?.username?.[0]?.toUpperCase()}
+      </div>
+    )}
+  </button>
 
-                  {/* Dropdown Menu */}
-                  <div className="absolute right-0 mt-2 w-48 py-2 bg-black border border-white/10 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
-                    <div className="px-4 py-2 border-b border-white/10">
-                      <p className="text-sm text-white font-medium">{user?.username}</p>
-                      <p className="text-xs text-gray-400">{user?.email}</p>
-                    </div>
-                    <Link to="/profile" className="block px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5">
-                      Profile Settings
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="block w-full text-left px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5"
-                    >
-                      Sign Out
-                    </button>
-                  </div>
-                </div>
+  {/* Dropdown Menu */}
+  <div className="absolute right-0 mt-2 w-48 py-2 bg-black border border-white/10 rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200">
+    <div className="px-4 py-2 border-b border-white/10">
+      {githubUser ? (
+        <>
+          <p className="text-sm text-white font-medium">{githubUser.login}</p>
+          <p className="text-xs text-gray-400">{githubUser.email}</p>
+        </>
+      ) : (
+        <>
+          <p className="text-sm text-white font-medium">{user?.username}</p>
+          <p className="text-xs text-gray-400">{user?.email}</p>
+        </>
+      )}
+    </div>
+    <Link to="/profile" className="block px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5">
+      Profile Settings
+    </Link>
+    <button
+      onClick={handleLogout}
+      className="block w-full text-left px-4 py-2 text-sm text-gray-400 hover:text-white hover:bg-white/5"
+    >
+      Sign Out
+    </button>
+  </div>
+</div>
               </>
             ) : (
               <Link
