@@ -31,7 +31,7 @@ const Header = () => {
   };
 
   const navLinks = [
-    { name: 'Dashboard', path: '/dashboard' },
+    { name: 'Dashboard', path: '/' },
     { name: 'Tasks', path: '/tasks' },
     { name: 'Calendar', path: '/calendar' },
     { name: 'Analytics', path: '/analytics' },

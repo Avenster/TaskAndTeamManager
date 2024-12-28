@@ -159,10 +159,10 @@ const FeatureCard = ({ feature }) => (
 
 const Introduction = () => {
   return (
-    <div className="max-w-5xl w-full h-full scrollbar-custom overflow-y-auto bg-black text-white">
-      <div className="ml-10">
+    <div className="max-w-5xl mt-1 w-full h-full scrollbar-custom overflow-y-auto bg-black text-white">
+      <div className="">
         {/* Enhanced Breadcrumb */}
-        <div className="px-6 py-4 text-gray-400 flex items-center space-x-2">
+        <div className="px-6 py-4 text-gray-400 flex items-center space-x-2 text-sm">
         <Home className="w-4 h-4 text-gray-400" />
         <span className="text-gray-400">/</span>
         <span className="text-gray-400 hover:text-cyan-500 cursor-pointer transition-colors">Dashboard</span>
@@ -173,7 +173,7 @@ const Introduction = () => {
         </div>
 
         {/* Hero Section */}
-        <div className="relative max-w-4xl px-6 py-12">
+        <div className="relative max-w-4xl px-6 py-3">
           <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-3xl" />
           <div className="relative">
             <div className="flex items-center mb-4 text-cyan-500">

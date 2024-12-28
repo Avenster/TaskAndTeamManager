@@ -84,7 +84,7 @@ const TaskPage = () => {
       title: 'Design Review', 
       description: 'Review new UI components with the design team', 
       priority: 'low', 
-      dueDate: 'In 2 Days',
+      dueDate: 'In 2 Days',  
       progress: 90
     }
   ];
