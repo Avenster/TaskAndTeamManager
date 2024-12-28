@@ -1,200 +1,287 @@
+import React from 'react';
+import { 
+  ArrowRight, Play, Shield, BarChart, Sparkles, Zap, 
+  Target, Rocket, Clock, Users, Workflow, Bell, 
+  LayoutDashboard, Laptop, Cloud, Lock,Home
+} from 'lucide-react';
 
-import { ArrowRight, Play, Shield, BarChart } from 'lucide-react';
-import Footer from './Footer';
-// Helper component for benefit cards - defined before it's used
-const BenefitCard = ({ icon, title, points }) => (
-  <div className="rounded-lg p-6 border  border-white/10 hover:border-gray-700 transition-colors">
-    <div className="text-cyan-500 mb-4">{icon}</div>
-    <h3 className="text-lg font-semibold mb-4">{title}</h3>
-    <ul className="space-y-2">
-      {points.map((point, index) => (
-        <li key={index} className="flex items-center text-gray-300">
-          <div className="w-1 h-1 bg-cyan-500 rounded-full mr-2" />
-          {point}
-        </li>
-      ))}
-    </ul>
-  </div>
-);
-
-// Data arrays - defined before the main component
+// Features data with enhanced descriptions and points
 const features = [
   {
-    title: "Intelligent Time Tracking",
-    description: "Track time, monitor productivity, and generate detailed reports. Make every minute count with automated time tracking and performance analytics.",
+    icon: <Clock className="w-6 h-6" />,
+    title: "Smart Time Tracking",
+    description: "Level up your productivity with AI-powered time tracking. Get insights that actually matter.",
     points: [
-      "Automatic time tracking for tasks",
-      "Daily and weekly productivity reports",
-      "Performance trend analysis",
-      "Billable hours calculation"
+      "Automatic task timing",
+      "AI productivity insights",
+      "Custom report generation",
+      "Real-time team tracking",
+      "Billable hours automation"
     ]
   },
   {
-    title: "Seamless Team Coordination",
-    description: "Connect your team with powerful collaboration tools. Real-time communication, file sharing, and integrated project spaces.",
+    icon: <Users className="w-6 h-6" />,
+    title: "Team Synergy",
+    description: "Connect your squad with next-gen collaboration tools. Stay in sync, always.",
     points: [
-      "Real-time team chat",
-      "Document collaboration",
-      "Video conferencing integration",
-      "Task-specific discussion threads"
+      "Real-time chat & updates",
+      "File sharing & collab",
+      "Video meetings integration",
+      "Team activity dashboard",
+      "Task discussions"
     ]
   },
   {
-    title: "Smart Automation",
-    description: "Reduce manual work with intelligent automation. Set up recurring tasks, automated notifications, and customized workflows.",
+    icon: <Workflow className="w-6 h-6" />,
+    title: "Workflow Automation",
+    description: "Let AI handle the boring stuff. Automate repetitive tasks and focus on what matters.",
     points: [
-      "Automated task creation",
-      "Smart due date reminders",
-      "Custom workflow automation",
-      "Scheduled reports"
+      "Smart task creation",
+      "Automated reminders",
+      "Custom workflows",
+      "Integration with your tools",
+      "AI-powered suggestions"
     ]
   },
   {
-    title: "Complete Project Control",
-    description: "Keep projects on track with comprehensive management tools. From planning to execution, monitor every aspect of your projects.",
+    icon: <LayoutDashboard className="w-6 h-6" />,
+    title: "Project Command Center",
+    description: "Your mission control for project success. Track, manage, and optimize everything.",
     points: [
-      "Multiple project views",
-      "Resource allocation",
-      "Progress tracking",
-      "Risk management"
+      "Visual project tracking",
+      "Resource management",
+      "Progress analytics",
+      "Risk monitoring",
+      "Budget tracking"
+    ]
+  }
+];
+
+const benefits = [
+  {
+    icon: <Lock className="w-6 h-6" />,
+    title: "Enterprise Security",
+    points: [
+      "End-to-end encryption",
+      "Two-factor authentication",
+      "Regular security audits",
+      "Access control",
+      "Data backup & recovery"
+    ]
+  },
+  {
+    icon: <Laptop className="w-6 h-6" />,
+    title: "Work Anywhere",
+    points: [
+      "Mobile-first design",
+      "Offline capabilities",
+      "Cross-device sync",
+      "Native apps",
+      "Browser extension"
+    ]
+  },
+  {
+    icon: <Cloud className="w-6 h-6" />,
+    title: "Cloud Integration",
+    points: [
+      "Google Workspace sync",
+      "Microsoft 365 integration",
+      "Cloud storage connect",
+      "API access",
+      "Custom webhooks"
     ]
   }
 ];
 
 const steps = [
   {
-    title: "Create & Organize",
-    description: "Start by creating tasks and organizing your workflow. Set priorities, assign team members, and establish deadlines. Our intuitive interface makes it simple to structure your work exactly how you need it."
+    title: "Set Up in Seconds",
+    description: "Get started instantly with our intuitive setup. Import your tasks, invite your team, and you're ready to roll. No complex configurations needed."
   },
   {
-    title: "Collaborate & Track",
-    description: "Work together seamlessly with your team. Track progress in real-time, share updates, and stay connected through integrated communication tools. Never miss an important update or deadline."
+    title: "Collaborate & Create",
+    description: "Work together in real-time. Chat, share files, and track progress all in one place. Stay connected with your team, no matter where they are."
   },
   {
-    title: "Analyze & Improve",
-    description: "Gain insights through detailed analytics. Understand team performance, identify bottlenecks, and make data-driven decisions to continuously improve your workflow."
+    title: "Level Up & Scale",
+    description: "Watch your productivity soar with AI insights and analytics. Make data-driven decisions and continuously optimize your workflow."
   }
 ];
 
+// Enhanced BenefitCard component
+const BenefitCard = ({ icon, title, points }) => (
+  <div className="group rounded-lg p-6 border border-white/10 hover:border-cyan-500/50 bg-black relative transition-all duration-300 hover:translate-y-[-2px]">
+    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 rounded-lg transition-opacity" />
+    <div className="relative">
+      <div className="text-cyan-500 mb-4 transform group-hover:scale-110 transition-transform">
+        {icon}
+      </div>
+      <h3 className="text-lg font-semibold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">
+        {title}
+      </h3>
+      <ul className="space-y-2">
+        {points.map((point, index) => (
+          <li key={index} className="flex items-center text-gray-300 group-hover:text-white transition-colors">
+            <div className="w-1 h-1 bg-cyan-500 rounded-full mr-2 group-hover:scale-150 transition-transform" />
+            {point}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+);
+
+// Feature Card component
+const FeatureCard = ({ feature }) => (
+  <div className="group rounded-lg p-6 border border-white/10 hover:border-cyan-500/50 bg-black relative transition-all duration-300 hover:translate-y-[-2px]">
+    <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 rounded-lg transition-opacity" />
+    <div className="relative">
+      <div className="text-cyan-500 mb-4 transform group-hover:scale-110 transition-transform">
+        {feature.icon}
+      </div>
+      <h3 className="text-xl font-semibold mb-3 text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">
+        {feature.title}
+      </h3>
+      <p className="text-gray-400 mb-4 group-hover:text-gray-300 transition-colors">
+        {feature.description}
+      </p>
+      <ul className="space-y-2">
+        {feature.points.map((point, idx) => (
+          <li key={idx} className="flex items-center text-gray-300 group-hover:text-white transition-colors">
+            <div className="w-1 h-1 bg-cyan-500 rounded-full mr-2 group-hover:scale-150 transition-transform" />
+            {point}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+);
+
 const Introduction = () => {
   return (
-    <div className="h-full max-w-5xl w-full overflow-y-scroll  border-r  border-white/10 bg-black text-white">
-    <div className=" overflow-y-scroll ml-10">
-      {/* Breadcrumb */}
-      <div className="px-6 py-4 text-gray-400">
-        <span>Docs</span>
-        <span className="mx-2">/</span>
-        <span>Introduction</span>
-      </div>
-
-      {/* Hero Section */}
-      <div className="max-w-4xl px-6 py-12">
-        <h1 className="text-3xl font-medium mb-4">Manage Tasks, Boost Productivity</h1>
-        <p className="text-gray-400 font-light text-l mb-8">
-          Transform the way your team works with our all-in-one task management solution. 
-          Streamline workflows, collaborate seamlessly, and achieve more together.
-        </p>
-        <div className="flex gap-4 mb-16">
-          <button className="bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-2.5 rounded-lg hover:opacity-90 transition-opacity flex items-center">
-            Get Started Free
-            <ArrowRight className="ml-2 w-4 h-4" />
-          </button>
-          <button className="bg-black border border-white/10 px-6 py-2.5 rounded-lg hover:bg-gray-700 transition-colors flex items-center">
-            Watch Demo
-            <Play className="ml-2 w-4 h-4" />
-          </button>
+    <div className="max-w-5xl w-full h-full scrollbar-custom overflow-y-auto bg-black text-white">
+      <div className="ml-10">
+        {/* Enhanced Breadcrumb */}
+        <div className="px-6 py-4 text-gray-400 flex items-center space-x-2">
+        <Home className="w-4 h-4 text-gray-400" />
+        <span className="text-gray-400">/</span>
+        <span className="text-gray-400 hover:text-cyan-500 cursor-pointer transition-colors">Dashboard</span>
+        <span className="text-gray-400">/</span>
+        <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500 font-medium">
+          Introduction
+        </span>
         </div>
 
-        {/* Key Features */}
-        <section className="mb-16">
-          <h2 className="text-xl font-bold mb-8">Everything You Need to Succeed</h2>
-          <div className="grid md:grid-cols-2 gap-6">
-            {features.map((feature, index) => (
-              <div key={index} className=" rounded-lg p-6 border  border-white/10 hover:border-gray-700 transition-colors">
-                <h3 className="text-l font-semibold mb-3">{feature.title}</h3>
-                <p className="text-gray-400 text-m mb-4">{feature.description}</p>
-                <ul className="space-y-2 text-m">
-                  {feature.points.map((point, idx) => (
-                    <li key={idx} className="flex items-center text-m text-gray-300">
-                      <div className="w-1 h-1 bg-cyan-500 rounded-full mr-2 text-m" />
-                      {point}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+        {/* Hero Section */}
+        <div className="relative max-w-4xl px-6 py-12">
+          <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full blur-3xl" />
+          <div className="relative">
+            <div className="flex items-center mb-4 text-cyan-500">
+              <Sparkles className="w-5 h-5 mr-2" />
+              <span className="text-sm font-medium">Next-Gen Task Management</span>
+            </div>
+            <h1 className="text-5xl font-bold mb-6 leading-tight">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">
+                Level Up Your Productivity
+              </span>
+            </h1>
+            <p className="text-gray-400 text-xl font-light mb-8 leading-relaxed">
+              Transform your workflow with our AI-powered task management solution. 
+              Built for the next generation of achievers. 🚀
+            </p>
+            <div className="flex gap-4 mb-16">
+              <button className="group bg-gradient-to-r from-cyan-500 to-blue-500 px-6 py-3 rounded-lg hover:opacity-90 transition-all duration-300 flex items-center">
+                Get Started Free
+                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
+              </button>
+              <button className="group bg-black border border-white/10 px-6 py-3 rounded-lg hover:border-cyan-500/50 transition-all duration-300 flex items-center">
+                Watch Demo
+                <Play className="ml-2 w-4 h-4 group-hover:scale-110 transition-transform" />
+              </button>
+            </div>
           </div>
-        </section>
 
-        {/* How It Works */}
-        <section className="mb-16">
-          <h2 className="text-2xl font-bold mb-8">Three Steps to Transform Your Workflow</h2>
-          <div className="space-y-8">
-            {steps.map((step, index) => (
-              <div key={index} className="border  border-white/10 rounded-lg p-6 hover:border-gray-700 transition-colors">
-                <div className="flex items-center mb-4">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center mr-4">
-                    {index + 1}
+          {/* Features Section */}
+          <section className="mb-16 relative">
+            <div className="flex items-center mb-8">
+              <Zap className="w-6 h-6 text-cyan-500 mr-2" />
+              <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">
+                Features that Hit Different
+              </h2>
+            </div>
+            <div className="grid md:grid-cols-2 gap-6">
+              {features.map((feature, index) => (
+                <FeatureCard key={index} feature={feature} />
+              ))}
+            </div>
+          </section>
+
+          {/* Steps Section */}
+          <section className="mb-16">
+            <div className="flex items-center mb-8">
+              <Target className="w-6 h-6 text-cyan-500 mr-2" />
+              <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">
+                Three Steps to Success
+              </h2>
+            </div>
+            <div className="space-y-8">
+              {steps.map((step, index) => (
+                <div key={index} className="group border border-white/10 rounded-lg p-6 hover:border-cyan-500/50 transition-all duration-300 relative">
+                  <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 rounded-lg transition-opacity" />
+                  <div className="relative flex items-center mb-4">
+                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center mr-4 group-hover:scale-110 transition-transform">
+                      <span className="text-white font-bold">{index + 1}</span>
+                    </div>
+                    <h3 className="text-xl font-semibold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">
+                      {step.title}
+                    </h3>
                   </div>
-                  <h3 className="text-xl font-semibold">{step.title}</h3>
+                  <p className="text-gray-400 group-hover:text-gray-300 transition-colors pl-14">
+                    {step.description}
+                  </p>
                 </div>
-                <p className="text-gray-400">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </section>
+              ))}
+            </div>
+          </section>
 
-        {/* Benefits */}
-        <section className="mb-16">
-          <h2 className="text-2xl font-bold mb-8">Why Choose Our Platform</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            <BenefitCard
-              icon={<Shield className="w-6 h-6" />}
-              title="Enterprise-Grade Security"
-              points={[
-                'End-to-end encryption',
-                'Two-factor authentication',
-                'Regular security audits',
-                'Customizable access controls'
-              ]}
-            />
-            {/* <BenefitCard
-              icon={<Mobile className="w-6 h-6" />}
-              title="Mobile Accessibility"
-              points={[
-                'Native mobile apps',
-                'Offline mode support',
-                'Real-time synchronization',
-                'Push notifications'
-              ]}
-            /> */}
-            <BenefitCard
-              icon={<BarChart className="w-6 h-6" />}
-              title="Advanced Analytics"
-              points={[
-                'Custom report generation',
-                'Performance metrics',
-                'Resource utilization insights',
-                'Trend analysis'
-              ]}
-            />
-          </div>
-        </section>
+          {/* Benefits Section */}
+          <section className="mb-16">
+            <div className="flex items-center mb-8">
+              <Rocket className="w-6 h-6 text-cyan-500 mr-2" />
+              <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">
+                Why We're Built Different
+              </h2>
+            </div>
+            <div className="grid md:grid-cols-3 gap-6">
+              {benefits.map((benefit, index) => (
+                <BenefitCard
+                  key={index}
+                  icon={benefit.icon}
+                  title={benefit.title}
+                  points={benefit.points}
+                />
+              ))}
+            </div>
+          </section>
 
-        {/* CTA */}
-        <section className="rounded-lg p-8 text-center border  border-white/10">
-          <h2 className="text-2xl font-bold mb-3">Ready to Transform Your Workflow?</h2>
-          <p className="text-gray-400 mb-6">
-            Join thousands of teams already using our platform to achieve more.
-          </p>
-          <button className="bg-gradient-to-r from-cyan-500 to-blue-500 px-8 py-3 rounded-lg hover:opacity-90 transition-opacity">
-            Get Started Now - Free Trial
-          </button>
-        </section>
+          {/* CTA Section */}
+          <section className="relative rounded-lg p-10 border border-white/10 overflow-hidden">
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 blur-xl" />
+            <div className="relative text-center">
+              <h2 className="text-3xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">
+                Ready to Level Up Your Game?
+              </h2>
+              <p className="text-gray-400 text-lg mb-8">
+                Join thousands of teams already crushing their goals! ✨
+              </p>
+              <button className="group bg-gradient-to-r from-cyan-500 to-blue-500 px-8 py-4 rounded-lg hover:opacity-90 transition-all duration-300 flex items-center justify-center mx-auto">
+                Start Your Journey
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </section>
+        </div>
       </div>
-      
-    </div>
-    <Footer />
     </div>
   );
 };
