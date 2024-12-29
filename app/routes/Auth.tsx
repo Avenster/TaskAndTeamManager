@@ -45,8 +45,6 @@ const AuthPage = () => {
   }
 
   const checkUsername = async (value) => {
-
-
     setUsername(value);
     if (value.length >= 3) {
       try {
@@ -142,7 +140,7 @@ const AuthPage = () => {
       localStorage.setItem('user', JSON.stringify(data.user));
 
       // Redirect or update app state
-      window.location.href = '/intro'; // Or use React Router navigation
+      window.location.href = '/Dashboard'; // Or use React Router navigation
     } catch (err) {
       setError(err.message);
     } finally {
