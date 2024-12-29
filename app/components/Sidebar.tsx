@@ -1,16 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Plus, ListTodo, Users, Settings, 
-  LayoutDashboard, Calendar, BarChart2, 
-  Clock, Target
-} from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import {
+  Plus,
+  ListTodo,
+  Users,
+  Settings,
+  LayoutDashboard,
+  Calendar,
+  BarChart2,
+  Clock,
+  Target,
+  Ungroup,
+  ChartNoAxesGantt,
+  User
+} from "lucide-react";
 
 const Sidebar = ({ onPageChange }) => {
   const [user, setUser] = useState(null);
-  const [activePage, setActivePage] = useState('dashboard');
+  const [activePage, setActivePage] = useState("dashboard");
+  const [isTeamDropdownOpen, setIsTeamDropdownOpen] = useState(false);
+  const [teams] = useState(["Team 1", "Team 2", "Team 3"]);
 
   useEffect(() => {
-    const userData = localStorage.getItem('user');
+    const userData = localStorage.getItem("user");
     if (userData) {
       setUser(JSON.parse(userData));
     }
@@ -25,7 +36,7 @@ const Sidebar = ({ onPageChange }) => {
     <aside className="flex w-64 h-full bg-black border-b border-l border-r border-white/10 flex flex-col">
       <div className="flex-1 px-3 py-4 overflow-y-auto scrollbar-custom">
         <h2 className="text-xl font-bold text-white mb-4">Quick Actions</h2>
-        
+
         {/* Action Buttons */}
         <div className="space-y-2 mb-6">
           <button className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">
@@ -40,28 +51,34 @@ const Sidebar = ({ onPageChange }) => {
 
         {/* Main Navigation */}
         <div className="mb-6 space-y-1">
-          <button 
-            onClick={() => handlePageChange('dashboard')}
+          <button
+            onClick={() => handlePageChange("dashboard")}
             className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
-              activePage === 'dashboard' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
+              activePage === "dashboard"
+                ? "bg-gray-800 text-white"
+                : "hover:bg-gray-800"
             }`}
           >
             <LayoutDashboard className="w-4 h-4 mr-3" />
             Introduction
           </button>
-          <button 
-            onClick={() => handlePageChange('tasks')}
+          <button
+            onClick={() => handlePageChange("tasks")}
             className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
-              activePage === 'tasks' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
+              activePage === "tasks"
+                ? "bg-gray-800 text-white"
+                : "hover:bg-gray-800"
             }`}
           >
             <ListTodo className="w-4 h-4 mr-3" />
             My Tasks
           </button>
-          <button 
-            onClick={() => handlePageChange('calendar')}
+          <button
+            onClick={() => handlePageChange("calendar")}
             className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
-              activePage === 'calendar' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
+              activePage === "calendar"
+                ? "bg-gray-800 text-white"
+                : "hover:bg-gray-800"
             }`}
           >
             <Calendar className="w-4 h-4 mr-3" />
@@ -71,46 +88,94 @@ const Sidebar = ({ onPageChange }) => {
 
         {/* Team Section */}
         <div className="mb-6">
-          <h3 className="text-sm font-semibold text-gray-400 mb-2 px-3">Team</h3>
+          <h3 className="text-sm font-semibold text-gray-400 mb-2 px-3">
+            Team
+          </h3>
           <div className="space-y-1">
-            <button 
-              onClick={() => handlePageChange('teams')}
+          <button
+              onClick={() => setIsTeamDropdownOpen(!isTeamDropdownOpen)}
+              className="w-full flex items-center justify-between px-3 py-2 text-gray-300 rounded-lg transition-colors hover:bg-gray-800"
+            >
+              <div className="flex items-center">
+                <Users className="w-4 h-4 mr-3" />
+                Teams
+              </div>
+              <svg
+                className={`w-4 h-4 transition-transform ${
+                  isTeamDropdownOpen ? "transform rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </button>
+
+            {/* Dropdown content */}
+            {isTeamDropdownOpen && (
+              <div className="ml-7 space-y-1">
+                {teams.map((team, index) => (
+                  <button
+                    key={index}
+                    onClick={() => handlePageChange(`team-${index + 1}`)}
+                    className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors hover:bg-gray-800 ${
+                      activePage === `team-${index + 1}`
+                        ? "bg-gray-800 text-white"
+                        : ""
+                    }`}
+                  >
+                    {team}
+                  </button>
+                ))}
+              </div>
+            )}
+            <button
+              onClick={() => handlePageChange("teams")}
               className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
-                activePage === 'teams' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
+                activePage === "teams"
+                  ? "bg-gray-800 text-white"
+                  : "hover:bg-gray-800"
               }`}
             >
-              <Target className="w-4 h-4 mr-3" />
-              Team Tasks
+              <ChartNoAxesGantt className="w-4 h-4 mr-3" />
+              Manage Teams
             </button>
-            <button 
-              onClick={() => handlePageChange('team-members')}
+
+            
+            <button
+              onClick={() => handlePageChange("analytics")}
               className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
-                activePage === 'team-members' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
-              }`}
-            >
-              <Users className="w-4 h-4 mr-3" />
-              Members
-            </button>
-            <button 
-              onClick={() => handlePageChange('analytics')}
-              className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
-                activePage === 'analytics' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
+                activePage === "analytics"
+                  ? "bg-gray-800 text-white"
+                  : "hover:bg-gray-800"
               }`}
             >
               <BarChart2 className="w-4 h-4 mr-3" />
               Analytics
             </button>
+            
+
           </div>
         </div>
 
         {/* Recent Activity */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-400 mb-2 px-3">Recent</h3>
+          <h3 className="text-sm font-semibold text-gray-400 mb-2 px-3">
+            Recent
+          </h3>
           <div className="space-y-1">
-            <button 
-              onClick={() => handlePageChange('activity')}
+            <button
+              onClick={() => handlePageChange("activity")}
               className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
-                activePage === 'activity' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
+                activePage === "activity"
+                  ? "bg-gray-800 text-white"
+                  : "hover:bg-gray-800"
               }`}
             >
               <Clock className="w-4 h-4 mr-3" />
@@ -130,10 +195,12 @@ const Sidebar = ({ onPageChange }) => {
             <span className="ml-2">{user.username}</span>
           </div>
         )}
-        <button 
-          onClick={() => handlePageChange('settings')}
+        <button
+          onClick={() => handlePageChange("settings")}
           className={`flex items-center transition-colors w-full ${
-            activePage === 'settings' ? 'text-white' : 'text-gray-300 hover:text-white'
+            activePage === "settings"
+              ? "text-white"
+              : "text-gray-300 hover:text-white"
           }`}
         >
           <Settings className="w-5 h-5 mr-2" />
