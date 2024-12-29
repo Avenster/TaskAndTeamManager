@@ -4,7 +4,7 @@ import {
   Plus, Calendar, BarChart2, Settings
 } from 'lucide-react';
 import { Link, useNavigate, useLocation } from '@remix-run/react';
-
+import NotificationDropdown from './ui/NotificationDropdown';
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
@@ -59,22 +59,6 @@ const Header = () => {
   }, []);
 
 
-  // useEffect(() => {
-  //   const token = localStorage.getItem('token');
-  //   const userData = localStorage.getItem('user');
-    
-  //   if (token && userData) {
-  //     try {
-  //       const parsedUserData = JSON.parse(userData);
-  //       setIsLoggedIn(true);
-  //       setUser(parsedUserData);
-  //     } catch (error) {
-  //       console.error('Error parsing user data:', error);
-  //       // Optionally, you can remove the corrupted data from localStorage
-  //       localStorage.removeItem('user');
-  //     }
-  //   }
-  // }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('token');
@@ -87,7 +71,7 @@ const Header = () => {
   };
 
   const navLinks = [
-    { name: 'Dashboard', path: '/' },
+    { name: 'Dashboard', path: '/Dashboard' },
     { name: 'Tasks', path: '/tasks' },
     { name: 'Calendar', path: '/calendar' },
     { name: 'Analytics', path: '/analytics' },
@@ -155,8 +139,9 @@ const Header = () => {
               <>
                 {/* Notifications */}
                 <button className="relative p-2 text-gray-400 hover:text-white transition-colors">
-                  <Bell className="w-5 h-5" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-cyan-500 rounded-full"></span>
+                  {/* <Bell className="w-5 h-5" /> */}
+                  <NotificationDropdown/>
+                  {/* <span className="absolute top-1 right-1 w-2 h-2 bg-cyan-500 rounded-full"></span> */}
                 </button>
 
                 {/* Theme Toggle */}

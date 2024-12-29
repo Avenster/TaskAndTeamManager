@@ -1,28 +1,35 @@
-// server.js
 const express = require('express');
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const dotenv = require('dotenv');
-
-
-dotenv.config();
-
-const app = express();
-app.use(express.json());
-app.use(cors());
-const fetch = (...args)=>
-  import ('node-fetch').then(({default:fetch}) =>fetch(...args));
-
 const bodyParser = require('body-parser');
 
-// MongoDB Connection
+// Initialize express and load environment variables
+dotenv.config();
+const app = express();
+
+// Middleware setup
+app.use(express.json());
+app.use(cors());
+app.use(bodyParser.json());
+
+// Dynamic import for node-fetch
+const fetch = (...args) => 
+  import('node-fetch').then(({default: fetch}) => fetch(...args));
+
+// Constants
+const PORT = process.env.PORT || 5000;
+const CLIENT_ID = "Ov23liblcsy9A9MU6zSC";
+const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
+
+/************************* Database Configuration *************************/
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log('Connected to MongoDB'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-// User Schema
+/************************* Schema Definitions *************************/
 const userSchema = new mongoose.Schema({
   username: { 
     type: String, 
@@ -48,7 +55,7 @@ const userSchema = new mongoose.Schema({
 
 const User = mongoose.model('User', userSchema);
 
-// Middleware to verify JWT
+/************************* Middleware Functions *************************/
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
   const token = authHeader && authHeader.split(' ')[1];
@@ -66,7 +73,7 @@ const authenticateToken = (req, res, next) => {
   }
 };
 
-
+/************************* Authentication Routes *************************/
 // Check username availability
 app.post('/api/check-username', async (req, res) => {
   try {
@@ -83,7 +90,7 @@ app.post('/api/signup', async (req, res) => {
   try {
     const { username, email, password } = req.body;
 
-    // Check if user already exists
+    // Check existing user
     const emailExists = await User.findOne({ email });
     if (emailExists) {
       return res.status(400).json({ error: 'Email already exists' });
@@ -94,11 +101,10 @@ app.post('/api/signup', async (req, res) => {
       return res.status(400).json({ error: 'Username already exists' });
     }
 
-    // Hash password
+    // Hash password and create user
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Create new user
     const user = new User({
       username,
       email,
@@ -107,7 +113,7 @@ app.post('/api/signup', async (req, res) => {
 
     const savedUser = await user.save();
     
-    // Create and assign JWT
+    // Generate JWT
     const token = jwt.sign(
       { id: savedUser._id }, 
       process.env.JWT_SECRET,
@@ -132,19 +138,16 @@ app.post('/api/login', async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Check if user exists
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({ error: 'Email or password is incorrect' });
     }
 
-    // Check password
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) {
       return res.status(400).json({ error: 'Email or password is incorrect' });
     }
 
-    // Create and assign token
     const token = jwt.sign(
       { id: user._id },
       process.env.JWT_SECRET,
@@ -164,13 +167,11 @@ app.post('/api/login', async (req, res) => {
   }
 });
 
-
-
-// Protected route example
+/************************* Protected Routes *************************/
 app.get('/api/protected', authenticateToken, (req, res) => {
   res.json({ message: 'This is a protected route', userId: req.user.id });
 });
-// Additional route to get user profile with GitHub data
+
 app.get('/api/user/profile', authenticateToken, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
@@ -180,16 +181,7 @@ app.get('/api/user/profile', authenticateToken, async (req, res) => {
   }
 });
 
-
-
-
-
-/*******************************Github Auth*****************************  */
-const CLIENT_ID = "Ov23liblcsy9A9MU6zSC";
-const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
-
-
-app.use(bodyParser.json());
+/************************* GitHub OAuth Routes *************************/
 app.get('/getAccessToken', async function (req, res) {
   const params = new URLSearchParams({
     client_id: CLIENT_ID,
@@ -209,7 +201,6 @@ app.get('/getAccessToken', async function (req, res) {
     if (data.error) {
       console.log(data);
       return res.status(400).json(data);
-      
     }
     
     res.json(data);
@@ -237,7 +228,6 @@ app.get('/getUserData', async function (req, res) {
       return res.status(response.status).json(data);
     }
     
-    // Generate a JWT token for the GitHub user
     const jwtToken = jwt.sign(
       { id: data.id, provider: 'github' },
       process.env.JWT_SECRET,
@@ -261,6 +251,5 @@ app.get('/getUserData', async function (req, res) {
   }
 });
 
-
-const PORT = process.env.PORT || 5000;
+/************************* Server Initialization *************************/
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

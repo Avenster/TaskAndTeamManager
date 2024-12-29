@@ -7,6 +7,7 @@ import {
 
 const Sidebar = ({ onPageChange }) => {
   const [user, setUser] = useState(null);
+  const [activePage, setActivePage] = useState('dashboard');
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -14,6 +15,11 @@ const Sidebar = ({ onPageChange }) => {
       setUser(JSON.parse(userData));
     }
   }, []);
+
+  const handlePageChange = (page) => {
+    setActivePage(page);
+    onPageChange(page);
+  };
 
   return (
     <aside className="flex w-64 h-full bg-black border-b border-l border-r border-white/10 flex flex-col">
@@ -35,22 +41,28 @@ const Sidebar = ({ onPageChange }) => {
         {/* Main Navigation */}
         <div className="mb-6 space-y-1">
           <button 
-            onClick={() => onPageChange('dashboard')}
-            className="w-full flex items-center px-3 py-2 text-gray-300 hover:bg-gray-800 rounded-lg transition-colors"
+            onClick={() => handlePageChange('dashboard')}
+            className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
+              activePage === 'dashboard' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
+            }`}
           >
             <LayoutDashboard className="w-4 h-4 mr-3" />
             Introduction
           </button>
           <button 
-            onClick={() => onPageChange('tasks')}
-            className="w-full flex items-center px-3 py-2 text-gray-300 hover:bg-gray-800 rounded-lg transition-colors"
+            onClick={() => handlePageChange('tasks')}
+            className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
+              activePage === 'tasks' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
+            }`}
           >
             <ListTodo className="w-4 h-4 mr-3" />
             My Tasks
           </button>
           <button 
-            onClick={() => onPageChange('calendar')}
-            className="w-full flex items-center px-3 py-2 text-gray-300 hover:bg-gray-800 rounded-lg transition-colors"
+            onClick={() => handlePageChange('calendar')}
+            className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
+              activePage === 'calendar' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
+            }`}
           >
             <Calendar className="w-4 h-4 mr-3" />
             Calendar
@@ -62,22 +74,28 @@ const Sidebar = ({ onPageChange }) => {
           <h3 className="text-sm font-semibold text-gray-400 mb-2 px-3">Team</h3>
           <div className="space-y-1">
             <button 
-              onClick={() => onPageChange('teams')}
-              className="w-full flex items-center px-3 py-2 text-gray-300 hover:bg-gray-800 rounded-lg transition-colors"
+              onClick={() => handlePageChange('teams')}
+              className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
+                activePage === 'teams' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
+              }`}
             >
               <Target className="w-4 h-4 mr-3" />
               Team Tasks
             </button>
             <button 
-              onClick={() => onPageChange('team-members')}
-              className="w-full flex items-center px-3 py-2 text-gray-300 hover:bg-gray-800 rounded-lg transition-colors"
+              onClick={() => handlePageChange('team-members')}
+              className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
+                activePage === 'team-members' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
+              }`}
             >
               <Users className="w-4 h-4 mr-3" />
               Members
             </button>
             <button 
-              onClick={() => onPageChange('analytics')}
-              className="w-full flex items-center px-3 py-2 text-gray-300 hover:bg-gray-800 rounded-lg transition-colors"
+              onClick={() => handlePageChange('analytics')}
+              className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
+                activePage === 'analytics' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
+              }`}
             >
               <BarChart2 className="w-4 h-4 mr-3" />
               Analytics
@@ -90,8 +108,10 @@ const Sidebar = ({ onPageChange }) => {
           <h3 className="text-sm font-semibold text-gray-400 mb-2 px-3">Recent</h3>
           <div className="space-y-1">
             <button 
-              onClick={() => onPageChange('activity')}
-              className="w-full flex items-center px-3 py-2 text-gray-300 hover:bg-gray-800 rounded-lg transition-colors"
+              onClick={() => handlePageChange('activity')}
+              className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
+                activePage === 'activity' ? 'bg-gray-800 text-white' : 'hover:bg-gray-800'
+              }`}
             >
               <Clock className="w-4 h-4 mr-3" />
               Activity Log
@@ -105,16 +125,16 @@ const Sidebar = ({ onPageChange }) => {
         {user && (
           <div className="flex items-center py-1 text-white mb-3">
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center overflow-hidden">
-              {/* {user.username?.[0]?.toUpperCase()} */}
-
               <img src={user.avatar_url} alt="" />
             </div>
             <span className="ml-2">{user.username}</span>
           </div>
         )}
         <button 
-          onClick={() => onPageChange('settings')}
-          className="flex items-center text-gray-300 hover:text-white transition-colors w-full"
+          onClick={() => handlePageChange('settings')}
+          className={`flex items-center transition-colors w-full ${
+            activePage === 'settings' ? 'text-white' : 'text-gray-300 hover:text-white'
+          }`}
         >
           <Settings className="w-5 h-5 mr-2" />
           Settings
