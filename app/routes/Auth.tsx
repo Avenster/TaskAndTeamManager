@@ -93,7 +93,7 @@ const AuthPage = () => {
             if (authResponse.ok) {
               localStorage.setItem('token', authData.token);
               localStorage.setItem('user', JSON.stringify(authData.user));
-              window.location.href = '/intro';
+              window.location.href = '/Dashboard';
             } else {
               setError('Failed to authenticate with GitHub');
             }
