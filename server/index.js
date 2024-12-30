@@ -24,6 +24,10 @@ const PORT = process.env.PORT || 5000;
 const CLIENT_ID = "Ov23liblcsy9A9MU6zSC";
 const CLIENT_SECRET = process.env.GITHUB_CLIENT_SECRET;
 
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+const GOOGLE_REDIRECT_URI = "http://localhost:5000/auth/google/callback";
+
 /************************* Database Configuration *************************/
 mongoose.connect(process.env.MONGO_URL)
   .then(() => console.log('Connected to MongoDB'))
@@ -50,6 +54,13 @@ const userSchema = new mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now
+  },
+  googleId: String,
+  picture: String,
+  provider: {
+    type: String,
+    enum: ['local', 'github', 'google'],
+    default: 'local'
   }
 });
 
@@ -250,6 +261,71 @@ app.get('/getUserData', async function (req, res) {
     res.status(500).json({ error: 'Failed to fetch user data' });
   }
 });
+/***************************************************************** */
+app.get('/auth/google', (req, res) => {
+  const url = `https://accounts.google.com/o/oauth2/v2/auth?${new URLSearchParams({
+    client_id: GOOGLE_CLIENT_ID,
+    redirect_uri: GOOGLE_REDIRECT_URI,
+    response_type: 'code',
+    scope: 'email profile',
+    access_type: 'offline',
+    prompt: 'consent',
+  })}`;
+  
+  res.redirect(url);
+});
 
+app.get('/auth/google/callback', async (req, res) => {
+  const { code } = req.query;
+  
+  try {
+    // Exchange code for tokens
+    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: new URLSearchParams({
+        code,
+        client_id: GOOGLE_CLIENT_ID,
+        client_secret: GOOGLE_CLIENT_SECRET,
+        redirect_uri: GOOGLE_REDIRECT_URI,
+        grant_type: 'authorization_code',
+      }),
+    });
+
+    const { access_token, id_token } = await tokenResponse.json();
+
+    // Get user info
+    const userResponse = await fetch('https://www.googleapis.com/oauth2/v2/userinfo', {
+      headers: { Authorization: `Bearer ${access_token}` },
+    });
+
+    const userData = await userResponse.json();
+
+    // Create JWT token
+    const token = jwt.sign(
+      { 
+        id: userData.id, 
+        provider: 'google' 
+      },
+      process.env.JWT_SECRET,
+      { expiresIn: '24h' }
+    );
+
+    // Redirect to frontend with token
+    res.redirect(`http://localhost:5173/auth/callback?token=${token}&user=${encodeURIComponent(JSON.stringify({
+      id: userData.id,
+      email: userData.email,
+      name: userData.name,
+      picture: userData.picture,
+      provider: 'google'
+    }))}`);
+    
+  } catch (error) {
+    console.error('Google auth error:', error);
+    res.redirect('/auth/callback?error=Authentication failed');
+  }
+});
 /************************* Server Initialization *************************/
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
