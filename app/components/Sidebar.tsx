@@ -35,36 +35,36 @@ const Sidebar = ({ onPageChange }) => {
   return (
     <aside className="flex w-64 h-full bg-black border-b border-l border-r border-white/10 flex flex-col">
       <div className="flex-1 px-3 py-4 overflow-y-auto scrollbar-custom">
-        <h2 className="text-xl font-bold text-white mb-4">Quick Actions</h2>
+      <h2 className="text-lg font-semibold text-white mb-4 tracking-wide">Quick Actions</h2>
 
-        {/* Action Buttons */}
-        <div className="space-y-2 mb-6">
-          <button className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-4 py-2 rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center">
-            <Plus className="w-4 h-4 mr-2" />
-            Create Task
-          </button>
-          <button className="w-full bg-black border border-white/10 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors flex items-center justify-center">
-            <Users className="w-4 h-4 mr-2" />
-            Create Team
-          </button>
+{/* Action Buttons - Slightly reduced padding and refined hover effect */}
+<div className="space-y-2 mb-6">
+  <button className="w-full bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-3 py-1.5 rounded-lg hover:opacity-90 transition-all duration-200 flex items-center justify-center text-sm">
+    <Plus className="w-3.5 h-3.5 mr-2" />
+    Create Task
+  </button>
+  <button className="w-full bg-black border border-white/10 text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 transition-all duration-200 flex items-center justify-center text-sm">
+    <Users className="w-3.5 h-3.5 mr-2" />
+    Create Team
+  </button>
         </div>
 
         {/* Main Navigation */}
         <div className="mb-6 space-y-1">
-          <button
+        <button
             onClick={() => handlePageChange("dashboard")}
-            className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
+            className={`w-full flex items-center px-3 py-1.5 text-sm text-gray-300 rounded-lg transition-all duration-200 ${
               activePage === "dashboard"
                 ? "bg-gray-800 text-white"
                 : "hover:bg-gray-800"
             }`}
           >
-            <LayoutDashboard className="w-4 h-4 mr-3" />
+            <LayoutDashboard className="w-3.5 h-3.5 mr-2.5" />
             Introduction
           </button>
           <button
             onClick={() => handlePageChange("tasks")}
-            className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
+            className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors text-sm ${
               activePage === "tasks"
                 ? "bg-gray-800 text-white"
                 : "hover:bg-gray-800"
@@ -75,7 +75,7 @@ const Sidebar = ({ onPageChange }) => {
           </button>
           <button
             onClick={() => handlePageChange("calendar")}
-            className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
+            className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg text-sm transition-colors ${
               activePage === "calendar"
                 ? "bg-gray-800 text-white"
                 : "hover:bg-gray-800"
@@ -88,20 +88,20 @@ const Sidebar = ({ onPageChange }) => {
 
         {/* Team Section */}
         <div className="mb-6">
-          <h3 className="text-sm font-semibold text-gray-400 mb-2 px-3">
+        <h3 className="text-xs font-medium text-gray-400 mb-2 px-3  tracking-wider">
             Team
           </h3>
           <div className="space-y-1">
           <button
               onClick={() => setIsTeamDropdownOpen(!isTeamDropdownOpen)}
-              className="w-full flex items-center justify-between px-3 py-2 text-gray-300 rounded-lg transition-colors hover:bg-gray-800"
+              className="w-full flex items-center justify-between px-3 py-1.5 text-sm text-gray-300 rounded-lg transition-all duration-200 hover:bg-gray-800"
             >
-              <div className="flex items-center">
-                <Users className="w-4 h-4 mr-3" />
+              <div className="flex items-center text-sm">
+                <Users className="w-3.5 h-3.5 mr-2.5" />
                 Teams
               </div>
               <svg
-                className={`w-4 h-4 transition-transform ${
+                className={`w-3.5 h-3.5 transition-transform duration-200 ${
                   isTeamDropdownOpen ? "transform rotate-180" : ""
                 }`}
                 fill="none"
@@ -119,12 +119,12 @@ const Sidebar = ({ onPageChange }) => {
 
             {/* Dropdown content */}
             {isTeamDropdownOpen && (
-              <div className="ml-7 space-y-1">
+              <div className="ml-6 space-y-0.5">
                 {teams.map((team, index) => (
                   <button
                     key={index}
                     onClick={() => handlePageChange(`team-${index + 1}`)}
-                    className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors hover:bg-gray-800 ${
+                    className={`w-full flex items-center px-3 py-1.5 text-sm text-gray-300 rounded-lg transition-all duration-200 hover:bg-gray-800 ${
                       activePage === `team-${index + 1}`
                         ? "bg-gray-800 text-white"
                         : ""
@@ -137,7 +137,7 @@ const Sidebar = ({ onPageChange }) => {
             )}
             <button
               onClick={() => handlePageChange("teams")}
-              className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
+              className={`w-full flex items-center px-3 py-2 text-gray-300 text-sm rounded-lg transition-colors ${
                 activePage === "teams"
                   ? "bg-gray-800 text-white"
                   : "hover:bg-gray-800"
@@ -150,7 +150,7 @@ const Sidebar = ({ onPageChange }) => {
             
             <button
               onClick={() => handlePageChange("analytics")}
-              className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
+              className={`w-full flex items-center px-3 py-2 text-gray-300 text-sm rounded-lg transition-colors ${
                 activePage === "analytics"
                   ? "bg-gray-800 text-white"
                   : "hover:bg-gray-800"
@@ -166,13 +166,13 @@ const Sidebar = ({ onPageChange }) => {
 
         {/* Recent Activity */}
         <div>
-          <h3 className="text-sm font-semibold text-gray-400 mb-2 px-3">
+        <h3 className="text-xs font-medium text-gray-400 mb-2 px-3 tracking-wider">
             Recent
           </h3>
           <div className="space-y-1">
             <button
               onClick={() => handlePageChange("activity")}
-              className={`w-full flex items-center px-3 py-2 text-gray-300 rounded-lg transition-colors ${
+              className={`w-full flex items-center px-3 py-2 text-sm text-gray-300 rounded-lg transition-colors ${
                 activePage === "activity"
                   ? "bg-gray-800 text-white"
                   : "hover:bg-gray-800"
@@ -192,18 +192,19 @@ const Sidebar = ({ onPageChange }) => {
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center overflow-hidden">
               <img src={user.avatar_url} alt="" />
             </div>
-            <span className="ml-2">{user.username}</span>
+            <span className="ml-2 text-sm">{user.username}</span>
+
           </div>
         )}
-        <button
+       <button
           onClick={() => handlePageChange("settings")}
-          className={`flex items-center transition-colors w-full ${
+          className={`flex items-center transition-all duration-200 w-full text-sm ${
             activePage === "settings"
               ? "text-white"
               : "text-gray-300 hover:text-white"
           }`}
         >
-          <Settings className="w-5 h-5 mr-2" />
+          <Settings className="w-3.5 h-3.5 mr-2" />
           Settings
         </button>
       </div>

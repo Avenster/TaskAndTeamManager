@@ -69,7 +69,8 @@ const LandingPage = () => {
       </section>
 
       {/* Enhanced Features Section */}
-      <section className="relative w-full py-24 bg-gradient-to-b from-black to-gray-900">
+      {/**/ }
+      <section className="relative max-w-7xl py-24 "> 
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-center mb-4">
             <Rocket className="w-5 h-5 text-cyan-500 mr-2" />
@@ -120,7 +121,7 @@ const LandingPage = () => {
       </section>
 
       {/* Enhanced How It Works Section */}
-      <section className="relative w-full py-24">
+      <section className="relative max-w-7xl py-24 bg-black">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-center mb-4">
             <Globe className="w-5 h-5 text-cyan-500 mr-2" />
@@ -155,8 +156,8 @@ const LandingPage = () => {
         </div>
       </section>
 
-      {/* Enhanced Testimonials Section */}
-      <section className="relative w-full py-24 bg-gradient-to-b from-gray-900 to-black">
+      {/* Enhanced Testimonials Section  bg-gradient-to-b from-gray-900 to-blac */}
+      <section className="relative max-w-7xl py-24">
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-center mb-4">
             <Award className="w-5 h-5 text-cyan-500 mr-2" />
@@ -195,7 +196,7 @@ const LandingPage = () => {
       </section>
 
       {/* Enhanced CTA Section */}
-      <section className="relative w-full py-24">
+      <section className="relative max-w-7xl py-24">
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 blur-3xl"></div>
         <div className="container mx-auto px-6 text-center relative">
           <h2 className="text-4xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-cyan-500 to-blue-500">

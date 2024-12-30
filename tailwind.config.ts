@@ -17,10 +17,21 @@ export default {
           "Noto Color Emoji",
         ],
       },
+      animation: {
+        'bounce': 'bounce 1s infinite',
+        'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      backdropBlur: {
+        'xl': '24px',
+        '2xl': '40px',
+      },
+      dropShadow: {
+        'glow': '0 0 10px rgba(6,182,212,0.3)',
       },
     },
   },
