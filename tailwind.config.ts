@@ -20,6 +20,20 @@ export default {
       animation: {
         'bounce': 'bounce 1s infinite',
         'pulse': 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+        'spin-slow': 'spin-slow 10s linear infinite',
+        'slide-up': 'slide-up 10s infinite',
+      },
+      keyframes: {
+        'spin-slow': {
+          'from': { transform: 'rotate(0deg)' },
+          'to': { transform: 'rotate(360deg)' }
+        },
+        'slide-up': {
+          '0%': { transform: 'translateY(100%)' },
+          '25%': { transform: 'translateY(0)' },
+          '75%': { transform: 'translateY(0)' },
+          '100%': { transform: 'translateY(-100%)' }
+        }
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -44,7 +58,7 @@ export default {
             height: "6px",
           },
           "&::-webkit-scrollbar-track": {
-            backgroundColor: "rgba(255, 255, 255, 0.1)",
+            backgroundColor: "rgba(104, 34, 34, 0.1)",
             borderRadius: "3px",
           },
           "&::-webkit-scrollbar-thumb": {

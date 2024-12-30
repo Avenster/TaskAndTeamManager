@@ -155,13 +155,13 @@ const Header = () => {
   <button className="flex items-center space-x-1">
     {user ? (
       <img 
-        src={user.avatar_url} 
-        alt={user.login}
+        src={user.avatar_url || user.picture} 
+        alt={user.login || user.name}
         className="w-8 h-8 rounded-full"
       />
     ) : (
       <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center text-white font-medium">
-        {user?.username?.[0]?.toUpperCase()}
+        {user?.username?.[0]?.toUpperCase() || user?.name?.[0]?.toUpperCase()}
       </div>
       
     )}
@@ -172,12 +172,12 @@ const Header = () => {
     <div className="px-4 py-2 border-b border-white/10">
       {user ? (
         <>
-          <p className="text-sm text-white font-medium">{user.username}</p>
+          <p className="text-sm text-white font-medium">{user.username || user.name}</p>
           <p className="text-xs text-gray-400">{user.email}</p>
         </>
       ) : (
         <>
-          <p className="text-sm text-white font-medium">{user?.username}</p>
+          <p className="text-sm text-white font-medium">{user?.username || user?.name}</p>
           <p className="text-xs text-gray-400">{user?.email}</p>
         </>
       )}

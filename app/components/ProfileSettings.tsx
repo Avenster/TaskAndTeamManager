@@ -30,7 +30,7 @@ const ProfileSettings = () => {
       setUser(parsedUser);
       setFormData(prev => ({
         ...prev,
-        username: parsedUser.username,
+        username: parsedUser.username || parsedUser.name,
         email: parsedUser.email
       }));
     }
@@ -101,14 +101,20 @@ const ProfileSettings = () => {
                 <div className="flex items-center space-x-4">
                   <div className="relative group">
                     <div className="w-20 h-20 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center text-white text-3xl font-bold">
-                      {user?.username?.[0]?.toUpperCase()}
+                      {/* {user?.avatar_url || user?.picture || user?.username?.[0]?.toUpperCase() || user?.name?.[0]?.toUpperCase()} */}
+                      {user?.avatar_url || user?.picture ? (
+                        <img src={user.avatar_url || user.picture} alt="" className="w-full h-full object-cover rounded-full" />
+                      ) : (
+                        user?.username?.[0]?.toUpperCase() || user?.name?.[0]?.toUpperCase()
+                      )}
+                      
                     </div>
                     <button className="absolute bottom-0 right-0 p-2 bg-black border border-white/10 rounded-full group-hover:border-cyan-500/50 transition-colors">
                       <Camera className="w-4 h-4 text-gray-400 group-hover:text-white" />
                     </button>
                   </div>
                   <div>
-                    <h3 className="text-xl font-semibold text-white">{user?.username}</h3>
+                    <h3 className="text-xl font-semibold text-white">{user?.username || user?.name}</h3>
                     <p className="text-gray-400">{user?.email}</p>
                   </div>
                 </div>

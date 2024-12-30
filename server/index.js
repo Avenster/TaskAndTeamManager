@@ -314,7 +314,7 @@ app.get('/auth/google/callback', async (req, res) => {
     );
 
     // Redirect to frontend with token
-    res.redirect(`http://localhost:5173/auth/callback?token=${token}&user=${encodeURIComponent(JSON.stringify({
+      res.redirect(`http://localhost:5173/auth/callback?token=${token}&user=${encodeURIComponent(JSON.stringify({
       id: userData.id,
       email: userData.email,
       name: userData.name,
