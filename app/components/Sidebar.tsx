@@ -190,9 +190,9 @@ const Sidebar = ({ onPageChange }) => {
         {user && (
           <div className="flex items-center py-1 text-white mb-3">
             <div className="w-8 h-8 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 flex items-center justify-center overflow-hidden">
-              <img src={user.avatar_url} alt="" />
+              <img src={user.avatar_url || user.picture} alt="" />
             </div>
-            <span className="ml-2 text-sm">{user.username}</span>
+            <span className="ml-2 text-sm">{user.username || user.name}</span>
 
           </div>
         )}
