@@ -9,21 +9,21 @@ const NotificationDropdown = () => {
     {
       id: 1,
       type: 'success',
-      message: 'ur task "Design Homepage" is complete fr fr',
+      message: 'Your task "Design Homepage" is complete fr fr',
       time: '2m ago',
       icon: CheckCircle
     },
     {
       id: 2,
       type: 'alert',
-      message: 'no cap, deadline approaching for "User Research"',
+      message: 'No cap, deadline approaching for "User Research"',
       time: '1h ago',
       icon: AlertCircle
     },
     {
       id: 3,
       type: 'reminder',
-      message: 'bestie, team meeting starts in 15 mins',
+      message: 'Bestie, team meeting starts in 15 mins',
       time: '15m ago',
       icon: Clock
     }
@@ -51,7 +51,7 @@ const NotificationDropdown = () => {
       {showNotifications && (
         <div className="absolute right-0 mt-2 w-80 bg-black border border-white/10 rounded-lg shadow-xl">
           <div className="flex items-center justify-between p-4 border-b border-white/10">
-            <h3 className="text-white font-medium">the notifs</h3>
+            <h3 className="text-white font-medium">Notifications</h3>
             <button 
               onClick={() => setShowNotifications(false)}
               className="text-gray-400 hover:text-white"
@@ -60,19 +60,19 @@ const NotificationDropdown = () => {
             </button>
           </div>
 
-          <div className="max-h-96 overflow-y-auto">
+          <div className="max-h-96 overflow-y-auto ">
             {notifications.map((notification) => (
               <div 
                 key={notification.id}
-                className="p-4 border-b border-white/10 hover:bg-white/5 transition-colors"
+                className="p-4 border-b  border-white/10 hover:bg-white/5 transition-colors"
               >
-                <div className="flex items-start space-x-3">
+                <div className="flex items-start justify-start space-x-3">
                   <notification.icon className={`w-5 h-5 mt-0.5 ${getIconColor(notification.type)}`} />
-                  <div className="flex-1">
-                    <p className="text-sm bg-gradient-to-r from-cyan-500 to-blue-500 bg-clip-text text-transparent">
+                  <div className="flex-1 items-start"> 
+                    <p className="text-sm bg-gradient-to-r from-cyan-500 to-blue-500 text-start bg-clip-text text-transparent">
                       {notification.message}
                     </p>
-                    <p className="text-xs text-gray-400 mt-1">{notification.time}</p>
+                    <p className="text-xs text-start text-gray-400 mt-1">{notification.time}</p>
                   </div>
                 </div>
               </div>
@@ -81,7 +81,7 @@ const NotificationDropdown = () => {
 
           <div className="p-3 border-t border-white/10">
             <button className="w-full px-4 py-2 text-sm bg-gradient-to-r from-cyan-500/10 to-blue-500/10 text-white rounded-lg hover:from-cyan-500/20 hover:to-blue-500/20 transition-colors">
-              clear all notifs
+              Clear All
             </button>
           </div>
         </div>
