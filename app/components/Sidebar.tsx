@@ -11,13 +11,18 @@ import {
   ChartNoAxesGantt,
   Menu
 } from "lucide-react";
+import { Link } from '@remix-run/react';
 
 const Sidebar = ({ onPageChange }) => {
   const [user, setUser] = useState(null);
   const [activePage, setActivePage] = useState("dashboard");
   const [isTeamDropdownOpen, setIsTeamDropdownOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [teams] = useState(["Team 1", "Team 2", "Team 3"]);
+  const [teams] = useState([
+    { id: "1", name: "Team 1" },
+    { id: "2", name: "Team 2" },
+    { id: "3", name: "Team 3" }
+  ]);
 
   useEffect(() => {
     const userData = localStorage.getItem("user");
@@ -77,71 +82,71 @@ const Sidebar = ({ onPageChange }) => {
         </div>
 
         <div className="mb-6">
-          {!isCollapsed && <h3 className="text-xs font-medium text-gray-400 mb-2 px-3 tracking-wider">Team</h3>}
-          
-          <div className="space-y-1">
-            <button
-              onClick={() => !isCollapsed && setIsTeamDropdownOpen(!isTeamDropdownOpen)}
-              className={`w-full flex items-center px-3 py-1.5 text-gray-300 rounded-lg transition-all duration-200 hover:bg-gray-800 ${
-                isCollapsed ? 'justify-center' : 'justify-between'
-              }`}
-            >
-              <div className="flex items-center">
-                <Users className="w-3.5 h-3.5" />
-                {!isCollapsed && <span className="ml-2.5 text-sm">Teams</span>}
-              </div>
-              {!isCollapsed && (
-                <svg
-                  className={`w-3.5 h-3.5 transition-transform duration-200 ${
-                    isTeamDropdownOpen ? "transform rotate-180" : ""
-                  }`}
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              )}
-            </button>
-
-            {!isCollapsed && isTeamDropdownOpen && (
-              <div className="ml-6 space-y-0.5">
-                {teams.map((team, index) => (
-                  <button
-                    key={index}
-                    onClick={() => handlePageChange(`team-${index + 1}`)}
-                    className={`w-full flex items-center px-3 py-1.5 text-sm text-gray-300 rounded-lg transition-all duration-200 hover:bg-gray-800 ${
-                      activePage === `team-${index + 1}` ? "bg-gray-800 text-white" : ""
-                    }`}
-                  >
-                    {team}
-                  </button>
-                ))}
-              </div>
-            )}
-
-            {[
-              { icon: ChartNoAxesGantt, label: "Manage Teams", id: "teams" },
-              { icon: BarChart2, label: "Analytics", id: "analytics" }
-            ].map((item) => (
-              <button
-                key={item.id}
-                onClick={() => handlePageChange(item.id)}
-                className={`w-full flex items-center px-3 py-1.5 text-gray-300 rounded-lg transition-all duration-200 ${
-                  activePage === item.id ? "bg-gray-800 text-white" : "hover:bg-gray-800"
-                } ${isCollapsed ? 'justify-center' : ''}`}
+        {!isCollapsed && <h3 className="text-xs font-medium text-gray-400 mb-2 px-3 tracking-wider">Team</h3>}
+        
+        <div className="space-y-1">
+          <button
+            onClick={() => !isCollapsed && setIsTeamDropdownOpen(!isTeamDropdownOpen)}
+            className={`w-full flex items-center px-3 py-1.5 text-gray-300 rounded-lg transition-all duration-200 hover:bg-gray-800 ${
+              isCollapsed ? 'justify-center' : 'justify-between'
+            }`}
+          >
+            <div className="flex items-center">
+              <Users className="w-3.5 h-3.5" />
+              {!isCollapsed && <span className="ml-2.5 text-sm">Teams</span>}
+            </div>
+            {!isCollapsed && (
+              <svg
+                className={`w-3.5 h-3.5 transition-transform duration-200 ${
+                  isTeamDropdownOpen ? "transform rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
-                <item.icon className="w-3.5 h-3.5" />
-                {!isCollapsed && <span className="ml-2.5 text-sm">{item.label}</span>}
-              </button>
-            ))}
-          </div>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            )}
+          </button>
+
+          {!isCollapsed && isTeamDropdownOpen && (
+            <div className="ml-6 space-y-0.5">
+              {teams.map((team) => (
+                <button
+                  key={team.id}
+                  onClick={() => handlePageChange(`team-${team.id}`)}
+                  className={`w-full flex items-center px-3 py-1.5 text-sm text-gray-300 rounded-lg transition-all duration-200 hover:bg-gray-800 ${
+                    activePage === `team-${team.id}` ? "bg-gray-800 text-white" : ""
+                  }`}
+                >
+                  {team.name}
+                </button>
+              ))}
+            </div>
+          )}
+
+          {[
+            { icon: ChartNoAxesGantt, label: "Manage Teams", id: "teams" },
+            { icon: BarChart2, label: "Analytics", id: "analytics" }
+          ].map((item) => (
+            <button
+              key={item.id}
+              onClick={() => handlePageChange(item.id)}
+              className={`w-full flex items-center px-3 py-1.5 text-gray-300 rounded-lg transition-all duration-200 ${
+                activePage === item.id ? "bg-gray-800 text-white" : "hover:bg-gray-800"
+              } ${isCollapsed ? 'justify-center' : ''}`}
+            >
+              <item.icon className="w-3.5 h-3.5" />
+              {!isCollapsed && <span className="ml-2.5 text-sm">{item.label}</span>}
+            </button>
+          ))}
         </div>
+      </div>
 
         <div>
           {!isCollapsed && <h3 className="text-xs font-medium text-gray-400 mb-2 px-3 tracking-wider">Recent</h3>}
